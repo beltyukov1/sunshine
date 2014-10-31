@@ -55,7 +55,9 @@ public class WeatherJsonParser {
         JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
 
         String[] resultStrs = new String[numDays];
-        for(int i = 0; i < weatherArray.length(); i++) {
+        int numberOfDays = weatherArray.length() < numDays ? weatherArray.length() : numDays;
+
+        for(int i = 0; i < numberOfDays; i++) {
             // For now, using the format "Day, description, hi/low"
             String day;
             String description;
