@@ -119,7 +119,9 @@ public class ForecastFragment extends Fragment {
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
                         .build();
 
-                Log.v(LOG_TAG, "Weather URL: " + builtUri.toString());
+                if (BuildConfig.DEBUG) {
+                    Log.v(LOG_TAG, "Weather URL: " + builtUri.toString());
+                }
 
                 URL url = new URL(builtUri.toString());
 
@@ -157,7 +159,10 @@ public class ForecastFragment extends Fragment {
                     Log.e(LOG_TAG, "Problem parsing JSON: " + e);
                 }
 
-                Log.v(LOG_TAG, "JSON forecast: " + forecastJsonStr);
+                if (BuildConfig.DEBUG) {
+                    Log.v(LOG_TAG, "JSON forecast: " + forecastJsonStr);
+                }
+
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -178,6 +183,17 @@ public class ForecastFragment extends Fragment {
             }
 
             return forecasts;
+        }
+
+        @Override
+        protected void onPostExecute(String[] forecasts) {
+            List<String> forecastList = new ArrayList<String>(
+                    Arrays.asList(forecasts)
+            );
+
+            mForecastAdapter.clear();
+            mForecastAdapter.addAll(forecastList);
+            mForecastAdapter.notifyDataSetChanged();
         }
     }
 }
