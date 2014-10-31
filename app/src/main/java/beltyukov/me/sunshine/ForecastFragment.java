@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +25,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import beltyukov.me.sunshine.utils.WeatherJsonParser;
 
 public class ForecastFragment extends Fragment {
 
@@ -80,18 +84,19 @@ public class ForecastFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
-        protected Void doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
+            WeatherJsonParser weatherJsonParser = new WeatherJsonParser();
 
             // Will contain the raw JSON response as a string.
-            String forecastJsonStr = null;
+            String[] forecasts = null;
 
             String format = "json";
             String units = "metric";
@@ -144,7 +149,13 @@ public class ForecastFragment extends Fragment {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
-                forecastJsonStr = buffer.toString();
+                String forecastJsonStr = buffer.toString();
+
+                try {
+                    forecasts = weatherJsonParser.getWeatherDataFromJson(forecastJsonStr, numDays);
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, "Problem parsing JSON: " + e);
+                }
 
                 Log.v(LOG_TAG, "JSON forecast: " + forecastJsonStr);
             } catch (IOException e) {
@@ -161,11 +172,12 @@ public class ForecastFragment extends Fragment {
                         reader.close();
                     } catch (final IOException e) {
                         Log.e(LOG_TAG, "Error closing stream", e);
+                        e.printStackTrace();
                     }
                 }
             }
 
-            return null;
+            return forecasts;
         }
     }
 }
