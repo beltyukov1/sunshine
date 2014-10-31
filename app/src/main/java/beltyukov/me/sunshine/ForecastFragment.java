@@ -1,6 +1,7 @@
 package beltyukov.me.sunshine;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -64,6 +66,16 @@ public class ForecastFragment extends Fragment {
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String clickedForecast = mForecastAdapter.getItem(position);
+                Intent weatherDetailIntent = new Intent(getActivity(), DetailActivity.class);
+                weatherDetailIntent.putExtra(Intent.EXTRA_TEXT, clickedForecast);
+                startActivity(weatherDetailIntent);
+            }
+        });
 
         return rootView;
     }
@@ -187,13 +199,11 @@ public class ForecastFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] forecasts) {
-            List<String> forecastList = new ArrayList<String>(
-                    Arrays.asList(forecasts)
-            );
-
-            mForecastAdapter.clear();
-            mForecastAdapter.addAll(forecastList);
-            mForecastAdapter.notifyDataSetChanged();
+            if (forecasts != null) {
+                // Update list view with weather info
+                mForecastAdapter.clear();
+                mForecastAdapter.addAll(forecasts);
+            }
         }
     }
 }
