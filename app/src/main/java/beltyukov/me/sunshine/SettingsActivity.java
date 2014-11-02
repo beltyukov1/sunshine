@@ -1,7 +1,10 @@
 package beltyukov.me.sunshine;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +46,7 @@ public class SettingsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class PrefsFragment extends PreferenceFragment {
+    public static class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         public PrefsFragment() {
         }
@@ -52,6 +55,40 @@ public class SettingsActivity extends Activity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+
+            setLocationSummary();
+            setTemperatureUnitsSummary();
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals(getResources().getString(R.string.prefs_location_key))) {
+                setLocationSummary();
+            } else if (key.equals(getResources().getString(R.string.prefs_temperature_key))) {
+                setTemperatureUnitsSummary();
+            }
+        }
+
+        private void setLocationSummary() {
+            EditTextPreference location = (EditTextPreference) findPreference(getString(R.string.prefs_location_key));
+            location.setSummary(location.getText());
+        }
+
+        private void setTemperatureUnitsSummary() {
+            ListPreference temperatureUnits = (ListPreference) findPreference(getString(R.string.prefs_temperature_key));
+            temperatureUnits.setSummary(temperatureUnits.getEntry());
         }
     }
 }
