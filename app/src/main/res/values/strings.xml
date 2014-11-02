@@ -8,4 +8,11 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <string name="prefs_location_label">Location</string>
+    <string name="prefs_location_key" translatable="false">location</string>
+    <string name="prefs_location_default" translatable="false">65202</string>
+
+    <string name="prefs_temperature_label">Temperature Units</string>
+    <string name="prefs_temperature_key" translatable="false">units</string>
+    <string name="prefs_temperature_default" translatable="false">1</string>
 </resources>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="PreferenceCategory A">
-        <CheckBoxPreference
-            android:key="checkbox_preference"
-            android:title="title_checkbox_preference"
-            android:summary="summary_checkbox_preference" />
-    </PreferenceCategory>
+    <EditTextPreference
+        android:title="@string/prefs_location_label"
+        android:key="@string/prefs_location_key"
+        android:defaultValue="@string/prefs_location_default"
+        android:inputType="text"
+        android:singleLine="true" />
 
-    <PreferenceCategory android:title="PreferenceCategory B">
-        <EditTextPreference
-            android:key="edittext_preference"
-            android:title="title_edittext_preference"
-            android:summary="summary_edittext_preference"
-            android:dialogTitle="dialog_title_edittext_preference" />
-    </PreferenceCategory>
+    <ListPreference
+        android:title="@string/prefs_temperature_label"
+        android:key="@string/prefs_temperature_key"
+        android:entries="@array/temp_options"
+        android:entryValues="@array/temp_values"
+        android:defaultValue="@string/prefs_temperature_default" />
+
 </PreferenceScreen>
