@@ -14,5 +14,5 @@
 
     <string name="prefs_temperature_label">Temperature Units</string>
     <string name="prefs_temperature_key" translatable="false">units</string>
-    <string name="prefs_temperature_default" translatable="false">1</string>
+    <string name="prefs_temperature_default" translatable="false">Metric</string>
 </resources>

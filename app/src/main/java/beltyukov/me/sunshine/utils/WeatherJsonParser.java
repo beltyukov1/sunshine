@@ -39,7 +39,7 @@ public class WeatherJsonParser {
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
-    public String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+    public String[] getWeatherDataFromJson(String forecastJsonStr, int numDays, String temperatureUnit)
             throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
@@ -50,6 +50,7 @@ public class WeatherJsonParser {
         final String OWM_MIN = "min";
         final String OWM_DATETIME = "dt";
         final String OWM_DESCRIPTION = "main";
+        final String IMPERIAL = "Imperial";
 
         JSONObject forecastJson = new JSONObject(forecastJsonStr);
         JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
@@ -79,13 +80,22 @@ public class WeatherJsonParser {
             // Temperatures are in a child object called "temp".  Try not to name variables
             // "temp" when working with temperature.  It confuses everybody.
             JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
+
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
+            if (temperatureUnit.equals(IMPERIAL)) {
+                high = convertCelsiusToFahrenheit(high);
+                low = convertCelsiusToFahrenheit(low);
+            }
 
             highAndLow = formatHighLows(high, low);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
         return resultStrs;
+    }
+
+    private double convertCelsiusToFahrenheit(double temperature) {
+        return (temperature * 9/5) + 32;
     }
 }

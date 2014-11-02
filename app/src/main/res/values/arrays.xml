@@ -5,7 +5,7 @@
         <item>Imperial</item>
     </string-array>
     <string-array name="temp_values">
-        <item>1</item>
-        <item>2</item>
+        <item>Metric</item>
+        <item>Imperial</item>
     </string-array>
 </resources>

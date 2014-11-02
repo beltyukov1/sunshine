@@ -164,8 +164,14 @@ public class ForecastFragment extends Fragment {
                 }
                 String forecastJsonStr = buffer.toString();
 
+                String preferredTemperatureUnit = getTemperatureUnitsPreference();
+
+                if (BuildConfig.DEBUG) {
+                    Log.v(LOG_TAG, "Preferred unit: " + preferredTemperatureUnit);
+                }
+
                 try {
-                    forecasts = weatherJsonParser.getWeatherDataFromJson(forecastJsonStr, numDays);
+                    forecasts = weatherJsonParser.getWeatherDataFromJson(forecastJsonStr, numDays, preferredTemperatureUnit);
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Problem parsing JSON: " + e);
                 }
@@ -194,6 +200,11 @@ public class ForecastFragment extends Fragment {
             }
 
             return forecasts;
+        }
+
+        private String getTemperatureUnitsPreference() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            return prefs.getString(getString(R.string.prefs_temperature_key), getString(R.string.prefs_temperature_default));
         }
 
         @Override
