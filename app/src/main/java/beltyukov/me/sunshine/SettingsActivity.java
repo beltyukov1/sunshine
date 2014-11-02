@@ -74,9 +74,9 @@ public class SettingsActivity extends Activity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(getResources().getString(R.string.prefs_location_key))) {
+            if (key.equals(getString(R.string.prefs_location_key))) {
                 setLocationSummary();
-            } else if (key.equals(getResources().getString(R.string.prefs_temperature_key))) {
+            } else if (key.equals(getString(R.string.prefs_temperature_key))) {
                 setTemperatureUnitsSummary();
             }
         }

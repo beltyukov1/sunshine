@@ -2,9 +2,11 @@ package beltyukov.me.sunshine;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -89,7 +91,9 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("65202");
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String currentLocation = prefs.getString(getString(R.string.prefs_location_key), "");
+            new FetchWeatherTask().execute(currentLocation);
             return true;
         }
 
