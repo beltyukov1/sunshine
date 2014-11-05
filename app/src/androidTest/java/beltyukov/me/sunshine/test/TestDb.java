@@ -26,26 +26,21 @@ public class TestDb extends AndroidTestCase {
     }
 
     public void testInsertReadDb() {
-        String testName = "North Pole";
-        String testLocationSetting = "99705";
-        double testLatitude = 64.772;
-        double testLongitude = -147.355;
-
         // If there's an error in SQL create table string, it will be
         // thrown here when you try to get writable database
         WeatherDbHelper weatherDbHelper = new WeatherDbHelper(mContext);
         SQLiteDatabase db = weatherDbHelper.getWritableDatabase();
 
-        ContentValues values = createNorthPoleLocationValues();
+        ContentValues locationValues = createNorthPoleLocationValues();
 
-        long locationRowId = db.insert(LocationEntry.TABLE_NAME, null, values);
+        long locationRowId = db.insert(LocationEntry.TABLE_NAME, null, locationValues);
 
         assertTrue(locationRowId != -1);
         Log.d(LOG_TAG, "New row id: " + locationRowId);
 
         // Cursor is primary interface to the query results
         // Cursor is control structure that enables traversal of records in db
-        Cursor cursor = db.query(
+        Cursor locationCursor = db.query(
                 LocationEntry.TABLE_NAME,
                 null, // custom projection; not required (would return all columns)
                 null, // columns for where clause
@@ -56,38 +51,38 @@ public class TestDb extends AndroidTestCase {
         );
 
         // moveToFirst populates cursor with row of data
-        if (cursor.moveToFirst()) {
-            validateCursor(cursor, values);
-
-            // Fantastic.  Now that we have a location, add some weather!
-            ContentValues weatherValues = createWeatherValues(locationRowId);
-
-            long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
-            assertTrue(weatherRowId != -1);
-
-            // A cursor is your primary interface to the query results.
-            Cursor weatherCursor = db.query(
-                    WeatherEntry.TABLE_NAME,  // Table to Query
-                    null, // leaving "columns" null just returns all the columns.
-                    null, // cols for "where" clause
-                    null, // values for "where" clause
-                    null, // columns to group by
-                    null, // columns to filter by row groups
-                    null  // sort order
-            );
-
-            if (!weatherCursor.moveToFirst()) {
-                fail("No weather data returned!");
-            }
-
-            validateCursor(weatherCursor, weatherValues);
-
-            weatherCursor.close();
-            cursor.close();
-            db.close();
-        } else {
-            fail("No values returned :(");
+        if (!locationCursor.moveToFirst()) {
+            fail("No location data returned!");
         }
+
+        validateCursor(locationCursor, locationValues);
+
+        // Fantastic.  Now that we have a location, add some weather!
+        ContentValues weatherValues = createWeatherValues(locationRowId);
+
+        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
+        assertTrue(weatherRowId != -1);
+
+        // A cursor is your primary interface to the query results.
+        Cursor weatherCursor = db.query(
+                WeatherEntry.TABLE_NAME,  // Table to Query
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null  // sort order
+        );
+
+        if (!weatherCursor.moveToFirst()) {
+            fail("No weather data returned!");
+        }
+
+        validateCursor(weatherCursor, weatherValues);
+
+        weatherCursor.close();
+        locationCursor.close();
+        db.close();
     }
 
     static ContentValues createWeatherValues(long locationRowId) {
@@ -118,7 +113,6 @@ public class TestDb extends AndroidTestCase {
     }
 
     static void validateCursor(Cursor valueCursor, ContentValues expectedValues) {
-
         assertTrue(valueCursor.moveToFirst());
 
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
