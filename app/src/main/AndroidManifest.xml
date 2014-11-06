@@ -33,6 +33,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beltyukov.me.sunshine.MainActivity" />
         </activity>
+        <provider
+            android:authorities="beltyukov.me.sunshine"
+            android:name=".data.WeatherProvider" />
     </application>
 
 </manifest>
