@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import beltyukov.me.sunshine.R;
-
 
 public class MainActivity extends Activity {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="beltyukov.me.sunshine" >
+    package="me.beltyukov.sunshine" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -23,7 +23,7 @@
             android:parentActivityName="me.beltyukov.sunshine.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="beltyukov.me.sunshine.MainActivity" />
+                android:value="me.beltyukov.sunshine.MainActivity" />
         </activity>
         <activity
             android:name="me.beltyukov.sunshine.SettingsActivity"
@@ -31,10 +31,10 @@
             android:parentActivityName="me.beltyukov.sunshine.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="beltyukov.me.sunshine.MainActivity" />
+                android:value="me.beltyukov.sunshine.MainActivity" />
         </activity>
         <provider
-            android:authorities="beltyukov.me.sunshine"
+            android:authorities="me.beltyukov.sunshine"
             android:name="me.beltyukov.sunshine.data.WeatherProvider" />
     </application>
 

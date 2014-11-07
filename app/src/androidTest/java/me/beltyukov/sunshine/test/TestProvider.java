@@ -22,6 +22,9 @@ public class TestProvider extends AndroidTestCase {
         deleteAllRecords();
     }
 
+    public void testDeleteAllRecords() {
+        deleteAllRecords();
+    }
     public void testInsertReadProvider() {
         ContentValues locationValues = createNorthPoleLocationValues();
 

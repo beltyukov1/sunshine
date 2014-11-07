@@ -18,6 +18,8 @@
     <string name="prefs_temperature_label">Temperature Units</string>
     <string name="prefs_temperature_key" translatable="false">units</string>
     <string name="prefs_temperature_default" translatable="false">Metric</string>
+    <string name="prefs_temperature_imperial" translatable="false">Imperial</string>
+    <string name="prefs_temperature_metric" translatable="false">Metric</string>
 
     <string name="share">Share</string>
 </resources>
