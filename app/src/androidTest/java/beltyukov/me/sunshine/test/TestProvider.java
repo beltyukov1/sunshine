@@ -1,14 +1,15 @@
 package beltyukov.me.sunshine.test;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 import java.util.Map;
 import java.util.Set;
 
+import beltyukov.me.sunshine.data.WeatherContract;
 import beltyukov.me.sunshine.data.WeatherContract.LocationEntry;
 import beltyukov.me.sunshine.data.WeatherContract.WeatherEntry;
 import beltyukov.me.sunshine.data.WeatherDbHelper;
@@ -21,30 +22,15 @@ public class TestProvider extends AndroidTestCase {
         mContext.deleteDatabase(WeatherDbHelper.DATABASE_NAME);
     }
 
-    public void testInsertReadDb() {
-        // If there's an error in SQL create table string, it will be
-        // thrown here when you try to get writable database
-        WeatherDbHelper weatherDbHelper = new WeatherDbHelper(mContext);
-        SQLiteDatabase db = weatherDbHelper.getWritableDatabase();
-
+    public void testInsertReadProvider() {
         ContentValues locationValues = createNorthPoleLocationValues();
 
-        long locationRowId = db.insert(LocationEntry.TABLE_NAME, null, locationValues);
+        Uri locationUri = mContext.getContentResolver().insert(LocationEntry.CONTENT_URI, locationValues);
+        assertTrue(locationUri != null);
 
-        assertTrue(locationRowId != -1);
-        Log.d(LOG_TAG, "New row id: " + locationRowId);
+        long locationRowId = ContentUris.parseId(locationUri);
 
-        // Cursor is primary interface to the query results
-        // Cursor is control structure that enables traversal of records in db
-        Cursor locationCursor = db.query(
-                LocationEntry.TABLE_NAME,
-                null, // custom projection; not required (would return all columns)
-                null, // columns for where clause
-                null, // values for where clause
-                null, // columns to group by
-                null, // columns to filter by row groups
-                null // sort order
-        );
+        Cursor locationCursor = mContext.getContentResolver().query(LocationEntry.CONTENT_URI, null, null, null, null);
 
         // moveToFirst populates cursor with row of data
         if (!locationCursor.moveToFirst()) {
@@ -53,22 +39,22 @@ public class TestProvider extends AndroidTestCase {
 
         validateCursor(locationCursor, locationValues);
 
+        Uri locationIdUri = WeatherContract.LocationEntry.buildLocationUri(locationRowId);
+        Cursor locationCursorWithId = mContext.getContentResolver().query(locationIdUri, null, null, null, null);
+        if (!locationCursorWithId.moveToFirst()) {
+            fail("Failed getting location using ID!");
+        }
+
         // Fantastic.  Now that we have a location, add some weather!
         ContentValues weatherValues = createWeatherValues(locationRowId);
 
-        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
-        assertTrue(weatherRowId != -1);
+//        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
+        Uri weatherInsertUri = mContext.getContentResolver()
+                .insert(WeatherEntry.CONTENT_URI, weatherValues);
+        assertTrue(weatherInsertUri != null);
 
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = db.query(
-                WeatherEntry.TABLE_NAME,  // Table to Query
-                null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
-                null, // columns to group by
-                null, // columns to filter by row groups
-                null  // sort order
-        );
+        Cursor weatherCursor = mContext.getContentResolver().query(WeatherEntry.CONTENT_URI, null, null, null, null);
 
         if (!weatherCursor.moveToFirst()) {
             fail("No weather data returned!");
@@ -78,7 +64,42 @@ public class TestProvider extends AndroidTestCase {
 
         weatherCursor.close();
         locationCursor.close();
-        db.close();
+
+        // Add the location values in with the weather data so that we can make
+        // sure that the join worked and we actually get all the values back
+        addAllContentValues(weatherValues, locationValues);
+
+        // Get the joined Weather and Location data
+        weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.buildWeatherLocation(TestDb.TEST_LOCATION),
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+        TestDb.validateCursor(weatherCursor, weatherValues);
+
+        // Get the joined Weather and Location data with a start date
+        weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.buildWeatherLocationWithStartDate(
+                        TestDb.TEST_LOCATION, TestDb.TEST_DATE),
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+        TestDb.validateCursor(weatherCursor, weatherValues);
+        weatherCursor.close();
+
+        Uri locationAndDateUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(TestDb.TEST_LOCATION, TestDb.TEST_DATE);
+        Cursor weatherByLocationAndDateCursor = mContext.getContentResolver().query(locationAndDateUri, null, null, null, null);
+
+        if (!weatherByLocationAndDateCursor.moveToFirst()) {
+            fail("Failed to get weather by location and date!");
+        }
+        validateCursor(weatherByLocationAndDateCursor, weatherValues);
+
+        weatherByLocationAndDateCursor.close();
     }
 
     public void testGetType() {
@@ -151,5 +172,11 @@ public class TestProvider extends AndroidTestCase {
             assertEquals(expectedValue, valueCursor.getString(idx));
         }
         valueCursor.close();
+    }
+
+    void addAllContentValues(ContentValues destination, ContentValues source) {
+        for (String key : source.keySet()) {
+            destination.put(key, source.getAsString(key));
+        }
     }
 }
