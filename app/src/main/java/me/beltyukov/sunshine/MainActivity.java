@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine;
+package me.beltyukov.sunshine;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import beltyukov.me.sunshine.R;
 
 
 public class MainActivity extends Activity {

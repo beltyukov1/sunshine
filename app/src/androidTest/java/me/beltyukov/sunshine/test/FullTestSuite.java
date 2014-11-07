@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine.test;
+package me.beltyukov.sunshine.test;
 
 import android.test.suitebuilder.TestSuiteBuilder;
 

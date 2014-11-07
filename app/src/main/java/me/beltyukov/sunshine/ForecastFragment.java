@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine;
+package me.beltyukov.sunshine;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -28,7 +28,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import beltyukov.me.sunshine.utils.WeatherJsonParser;
+import beltyukov.me.sunshine.BuildConfig;
+import beltyukov.me.sunshine.R;
+import me.beltyukov.sunshine.utils.WeatherJsonParser;
 
 public class ForecastFragment extends Fragment {
 

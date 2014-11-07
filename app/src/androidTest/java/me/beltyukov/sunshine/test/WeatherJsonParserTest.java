@@ -1,10 +1,10 @@
-package beltyukov.me.sunshine.test.utils;
+package me.beltyukov.sunshine.test;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 
-import beltyukov.me.sunshine.utils.WeatherJsonParser;
+import me.beltyukov.sunshine.utils.WeatherJsonParser;
 
 public class WeatherJsonParserTest extends TestCase {
 

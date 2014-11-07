@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine;
+package me.beltyukov.sunshine;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+
+import beltyukov.me.sunshine.R;
 
 
 public class DetailActivity extends Activity {

@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine.data;
+package me.beltyukov.sunshine.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

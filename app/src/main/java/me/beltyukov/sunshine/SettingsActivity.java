@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine;
+package me.beltyukov.sunshine;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -8,6 +8,8 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import beltyukov.me.sunshine.R;
 
 
 public class SettingsActivity extends Activity {

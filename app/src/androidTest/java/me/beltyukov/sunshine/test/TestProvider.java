@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine.test;
+package me.beltyukov.sunshine.test;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -10,9 +10,9 @@ import android.util.Log;
 import java.util.Map;
 import java.util.Set;
 
-import beltyukov.me.sunshine.data.WeatherContract;
-import beltyukov.me.sunshine.data.WeatherContract.LocationEntry;
-import beltyukov.me.sunshine.data.WeatherContract.WeatherEntry;
+import me.beltyukov.sunshine.data.WeatherContract;
+import me.beltyukov.sunshine.data.WeatherContract.LocationEntry;
+import me.beltyukov.sunshine.data.WeatherContract.WeatherEntry;
 
 public class TestProvider extends AndroidTestCase {
 

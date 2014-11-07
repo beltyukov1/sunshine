@@ -1,11 +1,11 @@
-package beltyukov.me.sunshine.data;
+package me.beltyukov.sunshine.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import beltyukov.me.sunshine.data.WeatherContract.WeatherEntry;
-import beltyukov.me.sunshine.data.WeatherContract.LocationEntry;
+import me.beltyukov.sunshine.data.WeatherContract.WeatherEntry;
+import me.beltyukov.sunshine.data.WeatherContract.LocationEntry;
 
 public class WeatherDbHelper extends SQLiteOpenHelper {
 

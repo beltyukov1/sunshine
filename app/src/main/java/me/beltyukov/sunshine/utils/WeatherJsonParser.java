@@ -1,4 +1,4 @@
-package beltyukov.me.sunshine.utils;
+package me.beltyukov.sunshine.utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

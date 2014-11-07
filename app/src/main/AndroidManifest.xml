@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="beltyukov.me.sunshine.MainActivity"
+            android:name="me.beltyukov.sunshine.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,24 +18,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="beltyukov.me.sunshine.DetailActivity"
+            android:name="me.beltyukov.sunshine.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName="beltyukov.me.sunshine.MainActivity" >
+            android:parentActivityName="me.beltyukov.sunshine.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beltyukov.me.sunshine.MainActivity" />
         </activity>
         <activity
-            android:name="beltyukov.me.sunshine.SettingsActivity"
+            android:name="me.beltyukov.sunshine.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="me.beltyukov.sunshine.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beltyukov.me.sunshine.MainActivity" />
         </activity>
         <provider
             android:authorities="beltyukov.me.sunshine"
-            android:name=".data.WeatherProvider" />
+            android:name="me.beltyukov.sunshine.data.WeatherProvider" />
     </application>
 
 </manifest>
