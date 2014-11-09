@@ -9,6 +9,8 @@ import android.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import me.beltyukov.sunshine.data.WeatherContract;
+
 
 public class SettingsActivity extends Activity {
 
@@ -76,8 +78,12 @@ public class SettingsActivity extends Activity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(getString(R.string.prefs_location_key))) {
                 setLocationSummary();
+                FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
+                String location = ((EditTextPreference)findPreference(key)).getText();
+                weatherTask.execute(location);
             } else if (key.equals(getString(R.string.prefs_temperature_key))) {
                 setTemperatureUnitsSummary();
+                getActivity().getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
             }
         }
 

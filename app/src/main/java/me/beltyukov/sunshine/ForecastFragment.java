@@ -62,11 +62,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -129,20 +124,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = mForecastAdapter.getCursor();
                 if (cursor != null && cursor.moveToPosition(position)) {
-                    String dateString = Utility.formatDate(cursor.getString(COL_WEATHER_DATE));
-                    String weatherDescription = cursor.getString(COL_WEATHER_DESC);
-
-                    boolean isMetric = Utility.isMetric(getActivity());
-                    String high = Utility.formatTemperature(
-                            cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
-                    String low = Utility.formatTemperature(
-                            cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
-
-                    String detailString = String.format("%s - %s - %s/%s",
-                            dateString, weatherDescription, high, low);
-
+                    String dateString = WeatherContract.getDbDateString(WeatherContract.getDateFromDb(cursor.getString(COL_WEATHER_DATE)));
                     Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .putExtra(Intent.EXTRA_TEXT, detailString);
+                            .putExtra(Intent.EXTRA_TEXT, dateString);
                     startActivity(intent);
                 }
             }
@@ -155,6 +139,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mLocation != null && !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
+            getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+        }
     }
 
     @Override
@@ -172,6 +164,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void updateWeather() {
         String currentLocation = Utility.getPreferredLocation(getActivity());
