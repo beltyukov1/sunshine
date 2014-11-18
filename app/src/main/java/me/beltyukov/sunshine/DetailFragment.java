@@ -134,7 +134,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private void setViews(Cursor data) {
         int weatherId = data.getInt(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID));
-        mIconView.setImageResource(R.drawable.ic_launcher);
+        mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
         String weatherDate = data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATETEXT));
         String friendlyDay = Utility.getDayName(getActivity(), weatherDate);
