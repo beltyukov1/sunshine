@@ -12,15 +12,24 @@ import android.view.MenuItem;
 public class MainActivity extends Activity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private boolean mTwoPane;
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
-                    .commit();
+        if (findViewById(R.id.weather_detail_container) != null) {
+            mTwoPane = true;
+
+            // In two-pane mode, show detail view in this activity by
+            // adding or replacing detail fragment using fragment transaction
+            if (savedInstanceState == null) { // let system handle restoring detail fragment
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailFragment())
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
         }
     }
 
