@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,8 +23,8 @@ import java.util.Date;
 import java.util.Vector;
 
 import me.beltyukov.sunshine.data.WeatherContract;
+import me.beltyukov.sunshine.data.WeatherContract.LocationEntry;
 import me.beltyukov.sunshine.data.WeatherContract.WeatherEntry;
-import me.beltyukov.sunshine.data.WeatherDbHelper;
 
 public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
@@ -154,33 +153,34 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
     }
 
     private long addLocation(String locationSetting, String cityName, double lat, double lon) {
-        final SQLiteDatabase db = new WeatherDbHelper(mContext).getReadableDatabase();
+        long locationId;
 
-        Cursor cursor = db.query(
-                WeatherContract.LocationEntry.TABLE_NAME,
-                null,
-                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + "=?",
+        Cursor locationCursor = mContext.getContentResolver().query(
+                LocationEntry.CONTENT_URI,
+                new String[]{LocationEntry._ID},
+                LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
                 new String[]{locationSetting},
-                null,
-                null,
                 null
         );
 
-        if (!cursor.moveToFirst()) {
+        if (locationCursor.moveToFirst()) {
+            locationId = locationCursor.getLong(locationCursor.getColumnIndex(LocationEntry._ID));
+        } else {
             ContentValues locationValues = new ContentValues();
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
+            locationValues.put(LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
+            locationValues.put(LocationEntry.COLUMN_CITY_NAME, cityName);
+            locationValues.put(LocationEntry.COLUMN_COORD_LAT, lat);
+            locationValues.put(LocationEntry.COLUMN_COORD_LONG, lon);
 
             Uri insertedLocationUri = mContext.getContentResolver()
-                    .insert(WeatherContract.LocationEntry.CONTENT_URI, locationValues);
+                    .insert(LocationEntry.CONTENT_URI, locationValues);
 
-            return ContentUris.parseId(insertedLocationUri);
-        } else {
-            return cursor.getLong(cursor.getColumnIndex(WeatherContract.LocationEntry._ID));
-
+            locationId = ContentUris.parseId(insertedLocationUri);
         }
+
+        locationCursor.close();
+
+        return locationId;
     }
 
     @Override
