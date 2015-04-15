@@ -6,7 +6,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,15 +17,35 @@ import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
-import me.beltyukov.sunshine.data.WeatherContract;
+import me.beltyukov.sunshine.data.WeatherContract.WeatherEntry;
 
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int FORECAST_LOADER = 0;
-    private final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+    private static final int DETAIL_LOADER = 0;
+
+    private static final String[] DETAIL_COLUMNS = {
+            WeatherEntry.COLUMN_WEATHER_ID,
+            WeatherEntry.COLUMN_DATETEXT,
+            WeatherEntry.COLUMN_SHORT_DESC,
+            WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherEntry.COLUMN_HUMIDITY,
+            WeatherEntry.COLUMN_DEGREES,
+            WeatherEntry.COLUMN_PRESSURE,
+            WeatherEntry.COLUMN_WIND_SPEED
+    };
+    private static final int COL_WEATHER_ID = 0;
+    private static final int COL_WEATHER_DATE = 1;
+    private static final int COL_WEATHER_DESC = 2;
+    private static final int COL_WEATHER_MAX_TEMP = 3;
+    private static final int COL_WEATHER_MIN_TEMP = 4;
+    private static final int COL_WEATHER_HUMIDITY = 5;
+    private static final int COL_WEATHER_DEGREES = 6;
+    private static final int COL_WEATHER_PRESSURE = 7;
+    private static final int COL_WEATHER_WIND_SPEED = 8;
+
+    private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
     private ShareActionProvider mShareActionProvider;
-    private String mDate;
-    private String mLocation;
     private String mForecast;
 
     private ImageView mIconView;
@@ -38,9 +57,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindView;
     private TextView mPressureView;
-
-    public DetailFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,15 +85,15 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mLocation != null && !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
-            getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+        if (mForecast != null) {
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }
     }
 
@@ -86,8 +102,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         inflater.inflate(R.menu.detailfragment, menu);
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
+
         mShareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
-        setShareIntent(createShareForecastIntent());
+        if (mForecast != null) {
+            setShareIntent(createShareForecastIntent());
+        }
     }
 
     private Intent createShareForecastIntent() {
@@ -108,17 +127,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            mDate = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (intent == null) {
+            return null;
         }
-
-        mLocation = Utility.getPreferredLocation(getActivity());
-        Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(mLocation, mDate);
 
         return new CursorLoader(
                 getActivity(),
-                weatherUri,
-                null,
+                intent.getData(),
+                DETAIL_COLUMNS,
                 null,
                 null,
                 null
@@ -133,40 +149,42 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void setViews(Cursor data) {
-        int weatherId = data.getInt(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID));
+        int weatherId = data.getInt(COL_WEATHER_ID);
         mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
-        String weatherDate = data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATETEXT));
+        String weatherDate = data.getString(COL_WEATHER_DATE);
         String friendlyDay = Utility.getDayName(getActivity(), weatherDate);
         mFriendlyDateView.setText(friendlyDay);
 
         String dateString = Utility.getFormattedMonthDay(getActivity(), weatherDate);
         mDateView.setText(dateString);
 
-        String description = data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC));
+        String description = data.getString(COL_WEATHER_DESC);
         mDescriptionView.setText(description);
 
         boolean isMetric = Utility.isMetric(getActivity());
-        String high = Utility.formatTemperature(getActivity(), data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP)), isMetric);
+        String high = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
         mHighTempView.setText(high);
-        String low = Utility.formatTemperature(getActivity(), data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)), isMetric);
+        String low = Utility.formatTemperature(getActivity(), data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
         mLowTempView.setText(low);
 
-        float humidity = data.getFloat(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_HUMIDITY));
+        float humidity = data.getFloat(COL_WEATHER_HUMIDITY);
         String formattedHumidity = getString(R.string.format_humidity, humidity);
         mHumidityView.setText(formattedHumidity);
 
-        float windSpeed = data.getFloat(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED));
-        float windDegrees = data.getFloat(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DEGREES));
+        float windSpeed = data.getFloat(COL_WEATHER_WIND_SPEED);
+        float windDegrees = data.getFloat(COL_WEATHER_DEGREES);
         String formattedWind = Utility.getFormattedWind(getActivity(), windSpeed, windDegrees);
         mWindView.setText(formattedWind);
 
-        float pressure = data.getFloat(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_PRESSURE));
+        float pressure = data.getFloat(COL_WEATHER_PRESSURE);
         String formattedPressure = getString(R.string.format_pressure, pressure);
         mPressureView.setText(formattedPressure);
 
         mForecast = String.format("%s - %s - %s/%s",
                 dateString, description, high, low);
+
+        setShareIntent(createShareForecastIntent());
     }
 
     @Override
