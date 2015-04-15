@@ -43,7 +43,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherEntry.COLUMN_MAX_TEMP,
             WeatherEntry.COLUMN_MIN_TEMP,
             LocationEntry.COLUMN_LOCATION_SETTING,
-            WeatherEntry.COLUMN_WEATHER_ID
+            WeatherEntry.COLUMN_WEATHER_ID,
+            LocationEntry.COLUMN_COORD_LAT,
+            LocationEntry.COLUMN_COORD_LONG
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -55,6 +57,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_LOCATION_SETTING = 5;
     public static final int COL_WEATHER_ID_FOR_ICON = 6;
+    public static final int COL_LOCATION_COORD_LAT = 7;
+    public static final int COL_LOCATION_COORD_LONG = 8;
 
 
     private ForecastAdapter mForecastAdapter;
@@ -90,8 +94,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = mForecastAdapter.getCursor();
                 if (cursor != null && cursor.moveToPosition(position)) {
                     String dateString = WeatherContract.getDbDateString(WeatherContract.getDateFromDb(cursor.getString(COL_WEATHER_DATE)));
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .putExtra(Intent.EXTRA_TEXT, dateString);
+                    Uri detailUri = WeatherEntry.buildWeatherLocationWithDate(cursor.getString(COL_LOCATION_SETTING), dateString);
+                    Intent intent = new Intent(getActivity(), DetailActivity.class).setData(detailUri);
                     startActivity(intent);
                 }
             }
