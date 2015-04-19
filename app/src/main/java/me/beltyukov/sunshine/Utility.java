@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import me.beltyukov.sunshine.data.WeatherContract;
 
@@ -85,7 +86,7 @@ public class Utility {
                 return getDayName(context, dateStr);
             } else {
                 // Otherwise, use the form "Mon Jun 3"
-                SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
+                SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd", Locale.US);
                 return shortenedDateFormat.format(inputDate);
             }
         }
@@ -101,7 +102,7 @@ public class Utility {
      * @return
      */
     public static String getDayName(Context context, String dateStr) {
-        SimpleDateFormat dbDateFormat = new SimpleDateFormat(Utility.DATE_FORMAT);
+        SimpleDateFormat dbDateFormat = new SimpleDateFormat(Utility.DATE_FORMAT, Locale.US);
         try {
             Date inputDate = dbDateFormat.parse(dateStr);
             Date todayDate = new Date();
@@ -120,7 +121,7 @@ public class Utility {
                     return context.getString(R.string.tomorrow);
                 } else {
                     // Otherwise, the format is just the day of the week (e.g "Wednesday".
-                    SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
+                    SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
                     return dayFormat.format(inputDate);
                 }
             }
@@ -139,10 +140,10 @@ public class Utility {
      * @return The day in the form of a string formatted "December 6"
      */
     public static String getFormattedMonthDay(Context context, String dateStr) {
-        SimpleDateFormat dbDateFormat = new SimpleDateFormat(Utility.DATE_FORMAT);
+        SimpleDateFormat dbDateFormat = new SimpleDateFormat(Utility.DATE_FORMAT, Locale.US);
         try {
             Date inputDate = dbDateFormat.parse(dateStr);
-            SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMMM dd");
+            SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMMM dd", Locale.US);
             String monthDayString = monthDayFormat.format(inputDate);
             return monthDayString;
         } catch (ParseException e) {

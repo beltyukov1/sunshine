@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class WeatherJsonParser {
 
@@ -16,7 +17,7 @@ public class WeatherJsonParser {
         // Because the API returns a unix timestamp (measured in seconds),
         // it must be converted to milliseconds in order to be converted to valid date.
         Date date = new Date(time * 1000);
-        SimpleDateFormat format = new SimpleDateFormat("E, MMM d");
+        SimpleDateFormat format = new SimpleDateFormat("E, MMM d", Locale.US);
         return format.format(date);
     }
 
