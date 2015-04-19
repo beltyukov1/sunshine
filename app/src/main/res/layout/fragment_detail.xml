@@ -13,13 +13,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today"
             android:id="@+id/detail_day_textview" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="June 8"
             android:id="@+id/detail_date_textview" />
 
         <!-- Main content: high, low, art, weather state -->
@@ -27,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:baselineAligned="false">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -37,13 +36,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="21*"
                     android:id="@+id/detail_high_textview" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10*"
                     android:id="@+id/detail_low_textview" />
             </LinearLayout>
 
@@ -62,7 +59,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Clear"
                     android:id="@+id/detail_forecast_textview" />
             </LinearLayout>
         </LinearLayout>
@@ -71,19 +67,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Humidity: 84%"
             android:id="@+id/detail_humidity_textview" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Wind: 6 km/H NW"
             android:id="@+id/detail_wind_textview" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pressure: 1014 hPa"
             android:id="@+id/detail_pressure_textview" />
     </LinearLayout>
 </ScrollView>
