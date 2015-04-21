@@ -11,6 +11,7 @@
     <!--
     This layout is a two-pane layout for the Sunshine master/detail flow.
     -->
+    <!-- Static fragment -->
     <fragment
         android:id="@+id/fragment_forecast"
         android:name="me.beltyukov.sunshine.ForecastFragment"
@@ -19,6 +20,7 @@
         android:layout_weight="2"
         tools:layout="@android:layout/list_content" />
 
+    <!-- Dynamic fragment -->
     <FrameLayout
         android:id="@+id/weather_detail_container"
         android:layout_width="0dp"
