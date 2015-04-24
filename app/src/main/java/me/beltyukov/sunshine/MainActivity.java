@@ -9,14 +9,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ForecastFragment.Callback {
 
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private String mLocation;
+
     private boolean mTwoPane;
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        mLocation = Utility.getPreferredLocation(this);
         setContentView(R.layout.activity_main);
         if (findViewById(R.id.weather_detail_container) != null) {
             mTwoPane = true;
@@ -25,7 +30,7 @@ public class MainActivity extends Activity {
             // adding or replacing detail fragment using fragment transaction
             if (savedInstanceState == null) { // let system handle restoring detail fragment
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.weather_detail_container, new DetailFragment())
+                        .replace(R.id.weather_detail_container, new DetailFragment(), DETAILFRAGMENT_TAG)
                         .commit();
             }
         } else {
@@ -43,6 +48,20 @@ public class MainActivity extends Activity {
     protected void onResume() {
         Log.v(LOG_TAG, "onResume");
         super.onResume();
+//        String location = Utility.getPreferredLocation(this);
+//        if (location != null && !location.equals(mLocation)) {
+//            ForecastFragment forecastFragment = (ForecastFragment)getFragmentManager().findFragmentById(R.id.fragment_forecast);
+//            if (forecastFragment != null) {
+//                forecastFragment.onLocationChanged();
+//            }
+//
+//            DetailFragment detailFragment = (DetailFragment)getFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+//            if (detailFragment != null) {
+//                detailFragment.onLocationChanged();
+//            }
+//
+//            mLocation = location;
+//        }
     }
 
     @Override
@@ -97,6 +116,26 @@ public class MainActivity extends Activity {
         intent.setData(geoLocation);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onItemSelected(Uri dateUri) {
+        if (dateUri != null) {
+            if (mTwoPane) {
+                Bundle args = new Bundle();
+                args.putParcelable(DetailFragment.DETAIL_URI, dateUri);
+
+                DetailFragment detailFragment = new DetailFragment();
+                detailFragment.setArguments(args);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, detailFragment, DETAILFRAGMENT_TAG)
+                        .commit();
+            } else {
+                Intent intent = new Intent(this, DetailActivity.class).setData(dateUri);
+                startActivity(intent);
+            }
         }
     }
 }

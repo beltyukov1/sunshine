@@ -1,9 +1,9 @@
 package me.beltyukov.sunshine;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,6 +27,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static final int FORECAST_LOADER = 0;
     private String mLocation;
+    private Callback mCallback;
 
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
@@ -63,6 +64,18 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private ForecastAdapter mForecastAdapter;
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
+
     public ForecastFragment() {
     }
 
@@ -95,13 +108,22 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 if (cursor != null && cursor.moveToPosition(position)) {
                     String dateString = WeatherContract.getDbDateString(WeatherContract.getDateFromDb(cursor.getString(COL_WEATHER_DATE)));
                     Uri detailUri = WeatherEntry.buildWeatherLocationWithDate(cursor.getString(COL_LOCATION_SETTING), dateString);
-                    Intent intent = new Intent(getActivity(), DetailActivity.class).setData(detailUri);
-                    startActivity(intent);
+                    mCallback.onItemSelected(detailUri);
                 }
             }
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mCallback = (Callback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement Callback");
+        }
     }
 
     @Override
