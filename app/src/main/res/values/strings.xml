@@ -48,4 +48,5 @@
     <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
 
     <string name="share">Share</string>
+    <string name="detail_icon_description">Weather icon</string>
 </resources>
