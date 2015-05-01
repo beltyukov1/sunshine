@@ -36,6 +36,9 @@ public class MainActivity extends Activity implements ForecastFragment.Callback 
         } else {
             mTwoPane = false;
         }
+
+        ForecastFragment forecastFragment = (ForecastFragment) getFragmentManager().findFragmentById(R.id.fragment_forecast);
+        forecastFragment.setUseTodayLayout(!mTwoPane);
     }
 
     @Override
