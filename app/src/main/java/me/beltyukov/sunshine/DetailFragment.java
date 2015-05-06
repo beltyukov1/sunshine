@@ -8,6 +8,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import me.beltyukov.sunshine.data.WeatherContract.WeatherEntry;
@@ -112,7 +113,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
 
-        mShareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
         if (mForecast != null) {
             setShareIntent(createShareForecastIntent());
         }

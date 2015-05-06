@@ -1,15 +1,15 @@
 package me.beltyukov.sunshine;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends Activity implements ForecastFragment.Callback {
+public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -35,6 +35,7 @@ public class MainActivity extends Activity implements ForecastFragment.Callback 
             }
         } else {
             mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
         }
 
         ForecastFragment forecastFragment = (ForecastFragment) getFragmentManager().findFragmentById(R.id.fragment_forecast);
